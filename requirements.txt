@@ -1,7 +1,6 @@
 annotated-types==0.7.0
 anyio==4.9.0
 beautifulsoup4==4.13.3
-bs4==0.0.2
 certifi==2025.1.31
 charset-normalizer==3.4.1
 click==8.1.8
@@ -26,5 +25,4 @@ typing-inspection==0.4.0
 tzdata==2025.2
 urllib3==2.3.0
 uvicorn==0.34.0
-mangum
-
+mangum==0.14.0  # Specify the version for mangum
