@@ -1,8 +1,8 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from typing import Optional
 import os
-from questions import solve_question
-from mangum import Mangum  # ✅ Import Mangum for Vercel
+from app.utils.questions import solve_question
+from mangum import Mangum
 
 app = FastAPI()
 
@@ -21,8 +21,13 @@ async def upload_file(
             content = await file.read()
             f.write(content)
 
-    result = await solve_question(question, file_location)
-    
+    # Call the solve_question function
+    result = solve_question(question, file_location)  # Removed await if sync
+
+    # ✅ Clean up the uploaded file after processing
+    if file_location and os.path.exists(file_location):
+        os.remove(file_location)
+
     return result
 
 # ✅ ASGI handler for Vercel
