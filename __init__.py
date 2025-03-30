@@ -1,1 +1,1 @@
-from .main import app  # Ensures FastAPI app is accessible
+  # Ensures FastAPI app is accessible
