@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.main:handler"
+      "dest": "app/main.py"
     }
   ]
 }
