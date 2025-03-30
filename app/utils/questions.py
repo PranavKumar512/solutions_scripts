@@ -4,8 +4,8 @@ import os
 import asyncio
 import re
 from typing import Optional
-from .utils.GA_1 import *
 
+from app.utils.GA_1 import *
 # =============== Main Resolver Function ===============
 
 # ...existing imports...
