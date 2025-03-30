@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import os
 from app.utils.questions import solve_question
@@ -6,8 +7,21 @@ from mangum import Mangum
 
 app = FastAPI()
 
+# Add CORS middleware to allow all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
+
 # Ensure the 'file' directory exists
 os.makedirs("file", exist_ok=True)
+
+@app.get("/")
+async def hello():
+    return {"message": "Hello, World!"}
 
 @app.post("/api/answers")
 async def upload_file(
