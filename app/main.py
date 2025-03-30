@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 from typing import Optional
 import os
 from questions import solve_question
+from mangum import Mangum  # ✅ Import Mangum for Vercel
 
 app = FastAPI()
 
@@ -24,8 +25,5 @@ async def upload_file(
     
     return result
 
-# ASGI handler for Vercel
-def handler(req, res):
-    from mangum import Mangum
-    asgi_handler = Mangum(app)
-    return asgi_handler(req, res)
+# ✅ ASGI handler for Vercel
+handler = Mangum(app)
