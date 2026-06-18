@@ -5,10 +5,7 @@ import asyncio
 import re
 from typing import Optional
 from app.utils.GA_1 import *
-
-# =============== Main Resolver Function ===============
-
-# ...existing imports...
+import tempfile
 
 # =============== Main Resolver Function ===============
 
@@ -107,30 +104,31 @@ async def handle_zip_question(file_path: Optional[str] = None) -> str:
     Handles the ZIP extraction and CSV reading question.
     """
     if file_path and zipfile.is_zipfile(file_path):
-        extract_path = "file/extracted"
-        os.makedirs(extract_path, exist_ok=True)
+        # Use a temporary directory to safely extract files
+        with tempfile.TemporaryDirectory() as extract_path:
+            with zipfile.ZipFile(file_path, 'r') as zip_ref:
+                _safe_extract(zip_ref, extract_path)
 
-        with zipfile.ZipFile(file_path, 'r') as zip_ref:
-            zip_ref.extractall(extract_path)
-
-        # Find the CSV file
-        csv_file = None
-        for root, _, files in os.walk(extract_path):
-            for file in files:
-                if file.endswith(".csv"):
-                    csv_file = os.path.join(root, file)
+            # Find the CSV file
+            csv_file = None
+            for root, _, files in os.walk(extract_path):
+                for file in files:
+                    if file.endswith(".csv"):
+                        csv_file = os.path.join(root, file)
+                        break
+                if csv_file:
                     break
 
-        if csv_file:
-            df = pd.read_csv(csv_file)
-            if "answer" in df.columns:
-                answer = df["answer"].iloc[0]
-                return str(answer)
+            if csv_file:
+                df = pd.read_csv(csv_file)
+                if "answer" in df.columns:
+                    answer = df["answer"].iloc[0]
+                    return str(answer)
+                else:
+                    return "No 'answer' column found in CSV."
             else:
-                return "No 'answer' column found in CSV."
-        else:
-            return "No CSV file found in the ZIP."
-    
+                return "No CSV file found in the ZIP."
+
     return "Invalid or missing ZIP file."
 
 
@@ -145,7 +143,7 @@ async def handle_sum_question(question: str) -> str:
         num1, num2 = float(match.group(1)), float(match.group(2))
         result = calculate_sum(num1, num2)
         return f"The sum of {num1} and {num2} is {result}"
-    
+
     return "Invalid sum question format."
 
 
